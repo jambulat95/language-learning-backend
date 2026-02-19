@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+sqlalchemy[asyncio]
+asyncpg
+alembic
+pydantic
+pydantic-settings
+email-validator
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt==4.3.0
+python-multipart
+redis
+httpx
+langchain-core
+langchain-mistralai
+sse-starlette
