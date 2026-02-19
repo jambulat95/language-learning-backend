@@ -37,6 +37,7 @@ class Settings(BaseSettings):
     # Freemium limits
     FREE_MAX_CARD_SETS: int = 10
     FREE_MAX_CARDS_PER_DAY: int = 50
+    FREE_CONVERSATION_MAX_TURNS: int = 12
 
     # CORS
     CORS_ORIGINS: list[str] = ["http://localhost:5173", "http://localhost:80", "http://localhost"]

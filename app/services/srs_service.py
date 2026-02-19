@@ -83,9 +83,43 @@ async def get_due_cards(
     set_id: uuid.UUID,
     limit: int = 20,
     new_first: bool = True,
+    practice: bool = False,
 ) -> list[StudyCardResponse]:
-    """Get cards due for review, including new (unreviewed) cards."""
+    """Get cards due for review, including new (unreviewed) cards.
+
+    If practice=True, returns ALL cards in the set regardless of SRS schedule.
+    """
     card_set = await get_card_set_or_public(db, set_id, user)
+
+    if practice:
+        query = (
+            select(Card, UserCardProgress)
+            .outerjoin(
+                UserCardProgress,
+                (UserCardProgress.card_id == Card.id)
+                & (UserCardProgress.user_id == user.id),
+            )
+            .where(Card.card_set_id == card_set.id)
+            .order_by(Card.order_index, Card.created_at)
+            .limit(limit)
+        )
+        result = await db.execute(query)
+        return [
+            StudyCardResponse(
+                id=card.id,
+                card_set_id=card.card_set_id,
+                front_text=card.front_text,
+                back_text=card.back_text,
+                example_sentence=card.example_sentence,
+                image_url=card.image_url,
+                audio_url=card.audio_url,
+                card_type=card.card_type,
+                order_index=card.order_index,
+                created_at=card.created_at,
+                progress=CardProgressResponse.model_validate(progress) if progress else None,
+            )
+            for card, progress in result.tuples().all()
+        ]
 
     now = datetime.now(timezone.utc)
     results: list[StudyCardResponse] = []

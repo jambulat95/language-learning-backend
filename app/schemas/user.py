@@ -63,6 +63,7 @@ class UserResponse(BaseModel):
     daily_xp_goal: int
     is_premium: bool
     is_active: bool
+    is_admin: bool
     created_at: datetime
     updated_at: datetime | None
     interests: list[InterestResponse]

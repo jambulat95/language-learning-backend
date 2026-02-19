@@ -196,10 +196,15 @@ async def send_message(
             detail="Conversation has already ended",
         )
 
-    if conversation.total_turns >= settings.AI_CONVERSATION_MAX_TURNS:
+    max_turns = (
+        settings.AI_CONVERSATION_MAX_TURNS
+        if user.is_premium
+        else settings.FREE_CONVERSATION_MAX_TURNS
+    )
+    if conversation.total_turns >= max_turns:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Maximum turns ({settings.AI_CONVERSATION_MAX_TURNS}) reached. Please end the conversation.",
+            detail=f"Maximum turns ({max_turns}) reached. Please end the conversation.",
         )
 
     messages = conversation.messages or []

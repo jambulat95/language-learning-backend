@@ -26,10 +26,11 @@ async def get_due_cards_endpoint(
     set_id: uuid.UUID,
     limit: int = Query(20, ge=1, le=100),
     new_first: bool = Query(True),
+    practice: bool = Query(False),
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    return await get_due_cards(db, current_user, set_id, limit=limit, new_first=new_first)
+    return await get_due_cards(db, current_user, set_id, limit=limit, new_first=new_first, practice=practice)
 
 
 @router.post("/review", response_model=ReviewResponse)
